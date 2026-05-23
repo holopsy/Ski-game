@@ -22,4 +22,17 @@ public class PlayerControl : MonoBehaviour
         float speedMultiplier = Mathf.Abs(Mathf.Cos(Mathf.Deg2Rad * transform.eulerAngles.y));
         rb.AddForce(transform.forward * speed * speedMultiplier* Time.deltaTime);
     }
+
+    private void OnCollision()
+    {
+        Debug.Log("Hit Obstacle");
+        rb.AddForce(obstacleKnockback, ForceMode.Impulse);
+        canMove = false;
+        
+    }
+
+    private void AllowMove()
+    {
+        canMove = true;
+    }
 }
