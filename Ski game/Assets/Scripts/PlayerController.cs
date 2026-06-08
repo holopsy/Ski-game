@@ -1,61 +1,89 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private KeyCode leftInput, rightInput;
-    [SerializeField] private float acceleration = 100, turnSpeed = 100,
-        minSpeed =0, maxSpeed = 500, minAcceleration= -100, maxAcceleration = 200;
-    [SerializeField] private LayerMask groundLayers;
-    [SerializeField] private Transform groundTransform;
+    [Header("Movement")]
+    public float maxSpeed = 18f;
+    public float acceleration = 8f;
+    public float turnSpeed = 90f;
 
-    private float speed = 0;
+    [Header("Turn Limit")]
+    public float maxTurnAngle = 90f;
+
+    [Header("Ground Check")]
+    public Transform groundCheck;
+    public float groundCheckDistance = 1.2f;
+    public LayerMask groundLayer;
+
     private Rigidbody rb;
-    private Animator animator;
 
-    void Update()
-    {
-        bool isGrounded = Physics.Linecast(transform.position, groundTransform.position,
-            groundLayers);
-        if (isGrounded)
-        {
-            if (Input.GetKey(leftInput) && transform.eulerAngles.y < 269)
-            {
-                transform.Rotate(new Vector3(0, turnSpeed * Time.deltaTime, 0), Space.Self);
-            }
-            if (Input.GetKey(rightInput) && transform.eulerAngles.y > 91)
-            {
-                transform.Rotate(new Vector3(0, -turnSpeed * Time.deltaTime, 0), Space.Self);
-            }
-        }
+    private float startYRotation;
+    private float currentTurnAngle = 0f;
 
-    }
-    // Start is called before the first frame update
+    private bool isGrounded;
+    private bool canControl = true;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>();
+
+        // Saves the rotation the player already has in the scene
+        startYRotation = transform.eulerAngles.y;
     }
-    private void FixedUpdate()
+
+    void Update()
     {
-        float angle = Mathf.Abs(transform.eulerAngles.y - 180);
-        acceleration = Remap(0, 90, maxAcceleration, minAcceleration, angle);
-        speed += acceleration * Time.fixedDeltaTime;
-        speed = Mathf.Clamp(speed, minSpeed, maxSpeed);
-        animator.SetFloat("playerSpeed", speed);
-        Vector3 velocity = transform.forward * speed * Time.fixedDeltaTime;
-        rb.linearVelocity = new Vector3(velocity.x, rb.linearVelocity.y, velocity.z);
+        CheckGround();
+
+        if (canControl && isGrounded)
+        {
+            TurnPlayer();
+        }
     }
 
-    private float Remap(float oldMin, float oldMax, float newMin, float newMax, float oldValue)
+    void FixedUpdate()
     {
-        float oldRange = (oldMax - oldMin);
-        float newRange = (newMax - newMin);
-        float newValue = (((oldValue - oldMin) / oldRange) * newRange + newMin);
-        return newValue;
+        MovePlayer();
     }
 
-    // Update is called once per frame
+    void TurnPlayer()
+    {
+        float horizontalInput = Input.GetAxisRaw("Horizontal");
 
+        currentTurnAngle += horizontalInput * turnSpeed * Time.deltaTime;
+        currentTurnAngle = Mathf.Clamp(currentTurnAngle, -maxTurnAngle, maxTurnAngle);
+
+        transform.rotation = Quaternion.Euler(0f, startYRotation + currentTurnAngle, 0f);
+    }
+
+    void MovePlayer()
+    {
+        if (!isGrounded)
+        {
+            return;
+        }
+
+        // 1 when facing straight, 0 when turned 90 degrees sideways
+        float downhillAmount = Mathf.Cos(currentTurnAngle * Mathf.Deg2Rad);
+        downhillAmount = Mathf.Clamp01(downhillAmount);
+
+        float targetSpeed = maxSpeed * downhillAmount;
+
+        Vector3 targetVelocity = transform.forward * targetSpeed;
+        Vector3 smoothVelocity = Vector3.Lerp(rb.linearVelocity, targetVelocity, acceleration * Time.fixedDeltaTime);
+
+        rb.linearVelocity = new Vector3(smoothVelocity.x, rb.linearVelocity.y, smoothVelocity.z);
+    }
+
+    void CheckGround()
+    {
+        Vector3 rayStart = groundCheck != null ? groundCheck.position : transform.position;
+
+        isGrounded = Physics.Raycast(rayStart, Vector3.down, groundCheckDistance, groundLayer);
+    }
+
+    public void SetCanControl(bool value)
+    {
+        canControl = value;
+    }
 }

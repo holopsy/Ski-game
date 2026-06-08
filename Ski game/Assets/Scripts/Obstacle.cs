@@ -1,23 +1,28 @@
 using UnityEngine;
+using System;
 
 public class Obstacle : MonoBehaviour
 {
-    public delegate void OnHitAction();
-    public static event OnHitAction OnObstacleHit;
+    public static event Action<GameObject, Vector3> OnObstacleHit;
 
-    private void OnCollisionEnter(Collision collision)
+    protected virtual void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag("Player")) OnObstacleHit?.Invoke();
-    }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Vector3 hitDirection = collision.transform.position - transform.position;
+            hitDirection.y = 0f;
+            hitDirection.Normalize();
+
+            Debug.Log("Player hit obstacle: " + gameObject.name);
+
+            OnObstacleHit?.Invoke(collision.gameObject, hitDirection);
+
+            OnPlayerHit(collision.gameObject);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    protected virtual void OnPlayerHit(GameObject player)
     {
-        
+        // Extra obstacle behavior can go here.
     }
 }
