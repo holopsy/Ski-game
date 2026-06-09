@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
 
 public class RaceManager : MonoBehaviour
 {
@@ -23,6 +24,9 @@ public class RaceManager : MonoBehaviour
     public TMP_Text bestTimeText;
     public GameObject raceFinishedPanel;
 
+    [Header("Penalty UI")]
+    public GameObject penaltyTextObject;
+    public float penaltyTextDuration = 1f;
     void Awake()
     {
         Instance = this;
@@ -80,7 +84,23 @@ public class RaceManager : MonoBehaviour
 
         penaltyTime += amount;
         Debug.Log("Penalty added: +" + amount + " second");
+
         UpdateTimerUI();
+
+        if (penaltyTextObject != null)
+        {
+            StopCoroutine(nameof(ShowPenaltyTextRoutine));
+            StartCoroutine(ShowPenaltyTextRoutine());
+        }
+    }
+    
+    IEnumerator ShowPenaltyTextRoutine()
+    {
+        penaltyTextObject.SetActive(true);
+
+        yield return new WaitForSeconds(penaltyTextDuration);
+
+        penaltyTextObject.SetActive(false);
     }
 
     public void FinishRace()

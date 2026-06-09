@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class PlayerKnockback : MonoBehaviour
 {
-    [Header("Knockback Settings")]
-    public float knockbackForce = 12f;
-    public float knockbackTime = 0.5f;
+    [Header("Knockback")]
+    public float knockbackForce = 10f;
+    public float knockbackTime = 0.45f;
 
-    [Header("Audio")]
-    public AudioSource audioSource;
+    [Header("Hit Sound")]
+    public AudioSource hitAudioSource;
     public AudioClip hitSound;
 
     private Rigidbody rb;
@@ -55,9 +55,9 @@ public class PlayerKnockback : MonoBehaviour
             playerController.SetCanControl(false);
         }
 
-        if (audioSource != null && hitSound != null)
+        if (hitAudioSource != null && hitSound != null)
         {
-            audioSource.PlayOneShot(hitSound);
+            hitAudioSource.PlayOneShot(hitSound);
         }
 
         rb.linearVelocity = Vector3.zero;
