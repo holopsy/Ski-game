@@ -22,7 +22,23 @@ public class PlayerSkiSound : MonoBehaviour
 
     void Update()
     {
-        if (skiAudioSource == null || rb == null || playerController == null)
+        if (skiAudioSource == null)
+        {
+            return;
+        }
+
+        if (Time.timeScale == 0f ||
+            (RaceManager.Instance != null && RaceManager.Instance.raceFinished))
+        {
+            if (skiAudioSource.isPlaying)
+            {
+                skiAudioSource.Stop();
+            }
+
+            return;
+        }
+
+        if (rb == null || playerController == null)
         {
             return;
         }

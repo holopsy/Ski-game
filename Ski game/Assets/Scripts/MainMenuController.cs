@@ -1,14 +1,31 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class RaceMenu : MonoBehaviour
+public class MainMenuController : MonoBehaviour
 {
     [SerializeField] private GameObject quitConfirmationPanel;
 
-    public void RestartLevel()
+    void Awake()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+        if (quitConfirmationPanel != null)
+        {
+            quitConfirmationPanel.SetActive(false);
+        }
+    }
+
+    public void PlayGame()
+    {
+        int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(nextSceneIndex);
+        }
+        else
+        {
+            Debug.LogError("No playable level exists after MainMenu in Build Settings.");
+        }
     }
 
     public void ShowQuitConfirmation()
@@ -34,26 +51,5 @@ public class RaceMenu : MonoBehaviour
 #else
         Application.Quit();
 #endif
-    }
-
-    public void QuitGame()
-    {
-        ConfirmQuit();
-    }
-
-    public void LoadNextLevel()
-    {
-        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        int nextSceneIndex = currentSceneIndex + 1;
-
-        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
-        {
-            Time.timeScale = 1f;
-            SceneManager.LoadScene(nextSceneIndex);
-        }
-        else
-        {
-            Debug.Log("No next level in Build Settings");
-        }
     }
 }

@@ -61,7 +61,7 @@ public class PlayerController : MonoBehaviour
             TurnPlayer();
         }
 
-        if (Input.GetKeyDown(boostKey) && canBoost && isGrounded)
+        if (canControl && Input.GetKeyDown(boostKey) && canBoost && isGrounded)
         {
             StartCoroutine(BoostRoutine());
         }
@@ -84,7 +84,7 @@ public class PlayerController : MonoBehaviour
 
     void MovePlayer()
     {
-        if (!isGrounded)
+        if (!canControl || !isGrounded)
         {
             return;
         }

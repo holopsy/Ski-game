@@ -3,6 +3,9 @@ using UnityEngine;
 public class PenaltyZone : MonoBehaviour
 {
     public float penaltyAmount = 1f;
+    public AudioSource wrongSideAudioSource;
+    public AudioClip wrongSideSound;
+
     private bool triggered;
 
     void OnTriggerEnter(Collider other)
@@ -17,11 +20,17 @@ public class PenaltyZone : MonoBehaviour
             return;
         }
 
+        if (RaceManager.Instance == null ||
+            !RaceManager.Instance.AddPenalty(penaltyAmount))
+        {
+            return;
+        }
+
         triggered = true;
 
-        if (RaceManager.Instance != null)
+        if (wrongSideAudioSource != null && wrongSideSound != null)
         {
-            RaceManager.Instance.AddPenalty(penaltyAmount);
+            wrongSideAudioSource.PlayOneShot(wrongSideSound);
         }
 
         Debug.Log("Wrong side penalty: +" + penaltyAmount + " second");

@@ -27,9 +27,11 @@ public class RaceManager : MonoBehaviour
     [Header("Penalty UI")]
     public GameObject penaltyTextObject;
     public float penaltyTextDuration = 1f;
+
     void Awake()
     {
         Instance = this;
+        Time.timeScale = 1f;
     }
 
     void Start()
@@ -75,11 +77,11 @@ public class RaceManager : MonoBehaviour
         UpdateTimerUI();
     }
 
-    public void AddPenalty(float amount)
+    public bool AddPenalty(float amount)
     {
         if (!raceStarted || raceFinished)
         {
-            return;
+            return false;
         }
 
         penaltyTime += amount;
@@ -92,6 +94,8 @@ public class RaceManager : MonoBehaviour
             StopCoroutine(nameof(ShowPenaltyTextRoutine));
             StartCoroutine(ShowPenaltyTextRoutine());
         }
+
+        return true;
     }
     
     IEnumerator ShowPenaltyTextRoutine()
@@ -134,6 +138,7 @@ public class RaceManager : MonoBehaviour
         }
 
         UpdateBestTimeUI();
+        Time.timeScale = 0f;
     }
 
     public float GetFinalTime()

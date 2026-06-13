@@ -38,9 +38,20 @@ public class PlayerKnockback : MonoBehaviour
             return;
         }
 
+        ApplyKnockback(hitDirection);
+    }
+
+    public void ApplyKnockback(Vector3 hitDirection)
+    {
         if (isKnockedBack)
         {
             return;
+        }
+
+        hitDirection.y = 0f;
+        if (hitDirection.sqrMagnitude < 0.001f)
+        {
+            hitDirection = -transform.forward;
         }
 
         StartCoroutine(KnockbackRoutine(hitDirection));
@@ -60,8 +71,11 @@ public class PlayerKnockback : MonoBehaviour
             hitAudioSource.PlayOneShot(hitSound);
         }
 
-        rb.linearVelocity = Vector3.zero;
-        rb.AddForce(hitDirection * knockbackForce, ForceMode.Impulse);
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.AddForce(hitDirection.normalized * knockbackForce, ForceMode.Impulse);
+        }
 
         yield return new WaitForSeconds(knockbackTime);
 
