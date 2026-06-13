@@ -2,89 +2,163 @@
 
 ## Apraksts
 
-Šis projekts ir 3D slēpošanas spēles prototips Unity vidē. Spēlētājs kontrolē slēpotāju, brauc lejā pa trasi, izvairās no šķēršļiem, izbrauc cauri starta un finiša zonām, kā arī mēģina iegūt pēc iespējas labāku laiku.
+Šis projekts ir Unity vidē izstrādāts 3D slēpošanas spēles prototips. Spēlētājs kontrolē slēpotāju, brauc lejup pa trasi, izvairās no šķēršļiem un cenšas sasniegt finišu pēc iespējas īsākā laikā.
 
-Spēlē ir izveidota trase ar kokiem, akmeņiem, sniegavīriem, karodziņiem, lēcienu un UI sistēmu, kas parāda laiku, labāko rezultātu un līderu sarakstu.
+Projektā ir galvenā izvēlne un divi spēlējami līmeņi. Katrā līmenī ir sava trase, šķēršļi, laika uzskaite, labākais rezultāts un atsevišķs līderu saraksts.
 
 ## Controls
 
-* **A** — pagriezties pa kreisi
-* **D** — pagriezties pa labi
-* **Space** — īslaicīgs ātruma boost
+* **A** - pagriezties pa kreisi
+* **D** - pagriezties pa labi
+* **Space** - īslaicīgs ātruma boost
 
-## Galvenās funkcijas
+## Galvenā izvēlne
 
-* Izveidots slēpošanas līmenis ar trasi, dekorācijām, šķēršļiem un karodziņiem.
-* Spēlētājs pārvietojas, izmantojot `Rigidbody`, nevis tiešu `transform` pārvietošanu.
-* Slēpotājs var pagriezties pa kreisi un pa labi, bet nevar pārsniegt 90 grādu pagrieziena robežu.
-* Spēlētāja ātrums mainās atkarībā no tā, cik taisni viņš brauc lejā pa nogāzi.
-* Kad spēlētājs ir gaisā, slēpošanas skaņa apstājas.
+* **Play** poga sāk spēli un ielādē pirmo līmeni.
+* **Quit Game** poga atver iziešanas apstiprinājuma logu.
+* **Yes** poga aizver spēli.
+* **No** poga aizver apstiprinājuma logu.
+
+## Līmeņi
+
+Projektā ir divi spēlējami līmeņi:
+
+* **Level 1** - trase ar kokiem, akmeņiem, karodziņiem, lēcieniem un citiem šķēršļiem.
+* **Level 2** - atšķirīga trase ar lielāku šķēršļu un sniegavīru daudzumu.
+
+Pēc pirmā līmeņa pabeigšanas spēlētājs var restartēt līmeni, aizvērt spēli vai turpināt uz nākamo līmeni.
+
+## Spēlētāja kustība
+
+* Spēlētājs pārvietojas, izmantojot `Rigidbody`.
+* Slēpotājs automātiski brauc uz priekšu.
+* Spēlētājs var pagriezties pa kreisi un pa labi.
+* Maksimālais pagrieziena leņķis ir 90 grādi.
+* Ātrums mainās atkarībā no braukšanas virziena.
+* Kustība darbojas tikai tad, kad spēlētājs atrodas uz zemes.
+* Sadursmes laikā spēlētājs var tikt atsists atpakaļ.
+* Knockback laikā vadība uz īsu brīdi tiek atspējota.
+
+## Sacensību sistēma
+
 * Starta zona sāk sacensību taimeri.
-* Finiša zona aptur taimeri un parāda gala rezultātu.
-* Ja spēlētājs izbrauc garām karodziņam pa nepareizo pusi, laikam tiek pievienota +1 sekunde.
-* UI parāda pašreizējo laiku, labāko laiku, soda paziņojumu un finiša ekrānu.
-* Labākais laiks tiek saglabāts ar `PlayerPrefs`.
-* Līderu saraksts saglabā un parāda 5 labākos laikus.
-* Finiša ekrānā ir pogas, lai restartētu līmeni vai izietu no spēles.
+* Finiša zona aptur taimeri.
+* Pēc finiša spēle tiek apturēta.
+* Tiek parādīts finiša panelis un gala rezultāts.
+* Finišā tiek atskaņota skaņa.
+* Slēpošanas skaņa pēc finiša tiek apturēta.
+
+## Karodziņi un sodi
+
+Ja spēlētājs izbrauc karodziņam gar nepareizo pusi:
+
+* Gala laikam tiek pievienota viena sekunde.
+* Ekrānā parādās `+1s Penalty!` paziņojums.
+* Tiek atskaņota kļūdas skaņa.
 
 ## Šķēršļi
 
-Spēlē ir vairāki šķēršļu tipi:
+Spēlē ir vairāki šķēršļu veidi:
 
-* **Akmeņi** — ja spēlētājs tiem uzbrauc, spēlētājs tiek atsists atpakaļ.
-* **Koki** — darbojas kā šķēršļi un izraisa knockback efektu.
-* **Sniegavīri** — pēc sadursmes pazūd no spēles.
-* Sadursmes laikā tiek atskaņota skaņa, lai spēlētājs skaidrāk saprastu, ka ir notikusi kļūda.
+* **Akmeņi** - izraisa spēlētāja knockback.
+* **Koki** - darbojas kā fiziski šķēršļi.
+* **Sniegavīri** - met sniega bumbas spēlētāja virzienā.
+* **Sniega bumbas** - atsit spēlētāju un uz 0,5 sekundēm atspējo vadību.
 
-## Bonus funkcijas
+Sadursmes laikā tiek atskaņota skaņa.
 
-Projektā tika pievienoti vairāki uzlabojumi:
+## Sniegavīru sistēma
 
-* Ātruma boost ar **Space** pogu.
-* Boost nevar izmantot nepārtraukti, jo tam ir cooldown.
-* Boost statusa teksts maina krāsu:
+* Sniegavīri met sniega bumbas spēlētāja virzienā.
+* Metieni nedaudz paredz spēlētāja kustību.
+* Katram sniegavīram ir nejaušs 3 līdz 5 sekunžu cooldown.
+* Sniegavīri nemet sniega bumbas vienlaicīgi.
+* Sniega bumbas pēc noteikta laika automātiski pazūd.
+* Sniega bumba pēc trāpījuma spēlētājam tiek iznīcināta.
 
-  * zaļš — boost ir gatavs;
-  * oranžs — boost tiek izmantots;
-  * sarkans — boost atjaunojas.
+## Ātruma boost
+
+* Boost tiek aktivizēts ar **Space**.
+* Boost īslaicīgi palielina spēlētāja ātrumu.
+* Pēc izmantošanas sākas cooldown.
 * Boost laikā tiek izmantoti particle efekti.
-* Pievienota slēpošanas skaņa, kas skan tikai tad, kad spēlētājs slēpo pa zemi.
-* Ja spēlētājs ir gaisā pēc lēciena, slēpošanas skaņa apstājas.
-* Pievienots soda paziņojums UI, kad spēlētājs izbrauc nepareizo karodziņa pusi.
-* Pievienotas skaņas sadursmēm ar šķēršļiem.
+* Tiek atskaņota boost skaņa.
+
+Boost statusa krāsas:
+
+* **Zaļš** - boost ir gatavs.
+* **Oranžs** - boost tiek izmantots.
+* **Sarkans** - boost atjaunojas.
+
+## Skaņas sistēma
+
+Projektā ir pievienotas šādas skaņas:
+
+* Slēpošanas skaņa.
+* Boost skaņa.
+* Sadursmes skaņa.
+* Nepareizi izbraukta karodziņa skaņa.
+* Finiša skaņa.
+
+Slēpošanas skaņa tiek apturēta, kad spēlētājs atrodas gaisā vai sacensība ir pabeigta.
+
+## Lietotāja interfeiss
+
+UI parāda:
+
+* Pašreizējo sacensību laiku.
+* Labāko laiku.
+* Boost statusu.
+* Soda paziņojumu.
+* Gala rezultātu.
+* Piecus labākos rezultātus.
+* Restartēšanas pogu.
+* Nākamā līmeņa pogu.
+* Spēles aizvēršanas pogu.
+* Iziešanas apstiprinājuma logu.
 
 ## Līderu saraksts
 
-Līderu saraksts saglabā 5 labākos rezultātus vienam līmenim. Kad spēlētājs pabeidz sacensību, viņa gala laiks tiek pievienots sarakstam. Rezultāti tiek sakārtoti no labākā līdz sliktākajam laikam.
+* Katrā līmenī ir atsevišķs līderu saraksts.
+* Level 1 un Level 2 rezultāti netiek sajaukti.
+* Katrā sarakstā tiek saglabāti pieci labākie laiki.
+* Rezultāti tiek sakārtoti no ātrākā līdz lēnākajam.
+* Katram līmenim ir savs labākā laika ieraksts.
+* Dati tiek saglabāti ar `PlayerPrefs`.
 
-Dati tiek saglabāti ar `PlayerPrefs`, tāpēc rezultāti nepazūd pēc spēles restartēšanas.
+## Veiktspējas optimizācija
+
+Projektā tika veikti vairāki optimizācijas uzlabojumi:
+
+* Izdzēsts testa skripts, kas katrā kadrā veica ļoti daudz `GameObject.Find` izsaukumu.
+* Sniegavīri vairs nemet sniega bumbas bez pārtraukuma.
+* Sniega bumbas pēc noteikta laika tiek iznīcinātas.
+* Vides objekti ir atzīmēti kā `Static`.
+* No Level 2 izņemti bojāti un nevajadzīgi objekti.
+* Samazināta nevajadzīgu objektu uzkrāšanās spēles laikā.
 
 ## Kā spēlēt
 
-1. Sāc spēli un brauc lejā pa trasi.
-2. Izbrauc cauri starta karodziņiem, lai sāktu taimeri.
-3. Brauc garām krāsainajiem karodziņiem pa pareizo pusi.
-4. Izvairies no akmeņiem, kokiem un sniegavīriem.
-5. Izmanto boost, lai īslaicīgi palielinātu ātrumu.
-6. Izbrauc cauri finiša zonai, lai pabeigtu sacensību.
-7. Pēc finiša apskati savu gala laiku un līderu sarakstu.
+1. Galvenajā izvēlnē nospied **Play**.
+2. Brauc lejup pa trasi.
+3. Izbrauc cauri starta zonai, lai sāktu taimeri.
+4. Brauc garām karodziņiem pa pareizo pusi.
+5. Izvairies no kokiem, akmeņiem, sniegavīriem un sniega bumbām.
+6. Izmanto boost, lai īslaicīgi palielinātu ātrumu.
+7. Izbrauc cauri finiša zonai.
+8. Apskati gala laiku un līderu sarakstu.
+9. Restartē līmeni vai turpini uz nākamo līmeni.
 
 ## Izmantotās Unity sistēmas
 
-* `Rigidbody` spēlētāja kustībai
-* `Collider` un `Trigger` zonas sadursmēm un karodziņiem
-* `PlayerPrefs` rezultātu saglabāšanai
-* `TextMeshPro` UI tekstiem
-* `AudioSource` skaņas efektiem
-* `Particle System` boost efektam
-* `SceneManager` līmeņa restartēšanai un spēles izvēlnes pogām
-
-## Build informācija
-
-Projekts paredzēts kā Windows build.
-
-Iesniegumā iekļauts:
-
-* Windows spēles build
-* Git projekta links
-* README fails ar projekta aprakstu
+* `Rigidbody` spēlētāja un sniega bumbu fizikai.
+* `Collider` un `Trigger` sadursmēm un sacensību zonām.
+* `Physics.Raycast` zemes pārbaudei.
+* `PlayerPrefs` rezultātu saglabāšanai.
+* `TextMeshPro` UI tekstiem.
+* `AudioSource` skaņas efektiem.
+* `Particle System` boost efektam.
+* `SceneManager` līmeņu pārslēgšanai.
+* Unity Input System UI pogu ievadei.
+* Cinemachine kameras sekošanai spēlētājam.
+* Unity Profiler veiktspējas pārbaudei.
