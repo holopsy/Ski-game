@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections;
 
@@ -16,7 +17,7 @@ public class RaceManager : MonoBehaviour
 
     [Header("Best Time")]
     public float bestTime;
-    private const string BestTimeKey = "BestTime_Level01";
+    private string bestTimeKey;
 
     [Header("UI")]
     public TMP_Text timerText;
@@ -31,6 +32,7 @@ public class RaceManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
+        bestTimeKey = GetSceneBestTimeKey();
         Time.timeScale = 1f;
     }
 
@@ -148,9 +150,9 @@ public class RaceManager : MonoBehaviour
 
     void LoadBestTime()
     {
-        if (PlayerPrefs.HasKey(BestTimeKey))
+        if (PlayerPrefs.HasKey(bestTimeKey))
         {
-            bestTime = PlayerPrefs.GetFloat(BestTimeKey);
+            bestTime = PlayerPrefs.GetFloat(bestTimeKey);
         }
         else
         {
@@ -163,7 +165,7 @@ public class RaceManager : MonoBehaviour
         if (bestTime == 0f || finalTime < bestTime)
         {
             bestTime = finalTime;
-            PlayerPrefs.SetFloat(BestTimeKey, bestTime);
+            PlayerPrefs.SetFloat(bestTimeKey, bestTime);
             PlayerPrefs.Save();
 
             Debug.Log("New best time saved: " + bestTime.ToString("F2"));
@@ -203,10 +205,27 @@ public class RaceManager : MonoBehaviour
 
     public void ResetBestTime()
     {
-        PlayerPrefs.DeleteKey(BestTimeKey);
+        PlayerPrefs.DeleteKey(bestTimeKey);
         bestTime = 0f;
         UpdateBestTimeUI();
 
         Debug.Log("Best time reset");
+    }
+
+    string GetSceneBestTimeKey()
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        if (sceneName == "Level1")
+        {
+            return "BestTime_Level01";
+        }
+
+        if (sceneName == "Level2")
+        {
+            return "BestTime_Level02";
+        }
+
+        return "BestTime_" + sceneName.Replace(" ", string.Empty);
     }
 }

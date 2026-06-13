@@ -2832,7 +2832,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LeaderboardManager
   maxScores: 5
-  leaderboardKey: Leaderboard_Level01
+  leaderboardKey: Leaderboard_Level02
   leaderboardText: {fileID: 1444895779}
 --- !u!4 &413200092
 Transform:

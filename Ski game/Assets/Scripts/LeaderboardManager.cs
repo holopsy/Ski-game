@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class LeaderboardManager : MonoBehaviour
@@ -18,6 +19,7 @@ public class LeaderboardManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
+        leaderboardKey = GetSceneLeaderboardKey();
     }
 
     void Start()
@@ -115,5 +117,22 @@ public class LeaderboardManager : MonoBehaviour
         UpdateLeaderboardUI();
 
         Debug.Log("Leaderboard reset");
+    }
+
+    string GetSceneLeaderboardKey()
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        if (sceneName == "Level1")
+        {
+            return "Leaderboard_Level01";
+        }
+
+        if (sceneName == "Level2")
+        {
+            return "Leaderboard_Level02";
+        }
+
+        return "Leaderboard_" + sceneName.Replace(" ", string.Empty);
     }
 }
